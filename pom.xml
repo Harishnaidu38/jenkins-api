@@ -37,7 +37,7 @@
 						<password>H@rish@38</password>
 						<applicationName>jenkins-api</applicationName>
 						<environment>Sandbox</environment>
-						<region>${region}</region>
+						<region>us-east-1</region>
 						<workers>1</workers>
 						<workerType>MICRO</workerType>
 						<properties>
