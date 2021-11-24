@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="3d6ea797-32e3-461f-a9cd-378a20cf2e66" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="ebf99451-2b52-4370-9183-b79353006923" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="root" database="employee" />
+	</db:config>
+	<flow name="error-handling-demoFlow" doc:id="4be4e9bc-1d9e-42bd-9d1d-fdb9a4aa8fe2" >
+		<http:listener doc:name="Listener" doc:id="bf1593c4-f251-464f-9f90-3e9cbc7cbc85" config-ref="HTTP_Listener_config" path="/fetchEmployeeData/{employeeID}"/>
+		<validation:is-number doc:name="Is number" doc:id="0cc43f0a-04fd-4e77-9bd2-ba3aa2476d4a" value="#[attributes.uriParams.employeeID]" numberType="INTEGER"/>
+		<db:select doc:name="Select" doc:id="8d43ec08-11c1-4f02-8fb9-bdb28e2b1994" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * from onboardingemployeedetails
+where empid =:employeeID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	employeeID:attributes.uriParams.employeeID
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="04b7ee4a-9545-4bbd-aa2c-36586a071e65" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="aad5d8b8-0aa6-406a-a203-4619b8ce49a6" message="#[output application/json --- payload]"/>
+	</flow>
+</mule>
