@@ -36,13 +36,11 @@
 						<username>harishnaiduT38</username>
 						<password>H@rish@38</password>
 						<applicationName>jenkins-api</applicationName>
-						<environment>Sandbox</environment>
-						<region>us-east-1</region>
-						<workers>1</workers>
-						<workerType>MICRO</workerType>
-						<properties>
-							<key>value</key>
-						</properties>
+						environment>Sandbox</environment>
+				      <muleVersion>4.3.0</muleVersion>
+				      <workers>1</workers>
+				      <workerType>MICRO</workerType>
+				      <objectStoreV2>true</objectStoreV2>
 					</cloudHubDeployment>
 					<sharedLibraries>
 						<sharedLibrary>
